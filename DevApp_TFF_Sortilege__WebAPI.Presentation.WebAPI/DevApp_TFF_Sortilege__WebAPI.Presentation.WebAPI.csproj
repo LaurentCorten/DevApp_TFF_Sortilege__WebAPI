@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DevApp_TFF_Sortilege__WebAPI.ApplicationCore\DevApp_TFF_Sortilege__WebAPI.ApplicationCore.csproj" />
+    <ProjectReference Include="..\DevApp_TFF_Sortilege__WebAPI.Domain\DevApp_TFF_Sortilege__WebAPI.Domain.csproj" />
+    <ProjectReference Include="..\DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database\DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.csproj" />
+  </ItemGroup>
+
+</Project>

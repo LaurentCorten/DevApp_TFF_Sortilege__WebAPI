@@ -1,0 +1,6 @@
+@Starter_CleanArch_UAA2.Presentation.WebAPI_HostAddress = http://localhost:5063
+
+GET {{Starter_CleanArch_UAA2.Presentation.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/ApplicationCore/">
+    <Project Path="DevApp_TFF_Sortilege__WebAPI.ApplicationCore/DevApp_TFF_Sortilege__WebAPI.ApplicationCore.csproj" />
+  </Folder>
+  <Folder Name="/Domain/">
+    <Project Path="DevApp_TFF_Sortilege__WebAPI.Domain/DevApp_TFF_Sortilege__WebAPI.Domain.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database/DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.csproj" />
+  </Folder>
+  <Folder Name="/Presentation/">
+    <Project Path="DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI/DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.csproj" />
+  </Folder>
+</Solution>
