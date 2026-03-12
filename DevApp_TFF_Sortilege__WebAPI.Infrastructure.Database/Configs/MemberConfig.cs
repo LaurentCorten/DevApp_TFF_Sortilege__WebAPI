@@ -35,7 +35,8 @@ namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.Configs
             builder.Property(m => m.HashWord)
                 .HasColumnName("Hash_Mot")
                 .HasMaxLength(200)
-                .IsUnicode();
+                .IsUnicode()
+                .IsRequired();
 
             // Index - Uniques
             builder.HasIndex(m => m.Email)

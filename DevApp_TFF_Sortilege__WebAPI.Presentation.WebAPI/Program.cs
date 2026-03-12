@@ -28,7 +28,7 @@ builder.Services.AddDbContext<AppDbContext>(options => // TODO : Question : Pork
 
 
 // Controllers Mapping
-builder.Services.AddControllers(); // TODO : Question : CàD ??? Ça fait quoi exactement ???
+builder.Services.AddControllers();
 
 // Custom Exceptions Handling?
 
