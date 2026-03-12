@@ -1,0 +1,20 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Request
+{
+    public class MemberRequestDto
+    {
+        [MinLength(3), MaxLength(50)]
+        public string? Name { get; set; }
+
+        [Required]
+        [EmailAddress]
+        [MaxLength(320)]
+        public required string EmailAddress { get; set; }
+
+        [Required]
+        [RegularExpression("(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}")]
+        public required string Password { get; set; }
+
+    }
+}

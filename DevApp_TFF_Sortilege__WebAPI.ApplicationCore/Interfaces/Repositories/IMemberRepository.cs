@@ -1,7 +1,4 @@
 ﻿using DevApp_TFF_Sortilege__WebAPI.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Interfaces.Repositories
 {
@@ -13,6 +10,8 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Interfaces.Repositories
         // R
         Member? GetMemberByEmail(string email);
         string? GetHwdByEmail(string email);
+        bool CheckNameExists(string name);
+        bool CheckEmailExists(string email);
 
         //U
         Member Update(Guid id, Member modifiedMember);
