@@ -7,18 +7,16 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Services
 {
     public class MemberService : IMemberService
     {
+        #region DI
         private readonly IMemberRepository _memberRepository;
 
         public MemberService(IMemberRepository memberRepository)
         {
             _memberRepository = memberRepository;
         }
+        #endregion
 
-        public Member Login(string email, string password)
-        {
-            throw new NotImplementedException();
-        }
-
+        #region Auth
         public Member Register(Member newMember) // Attention Name et email UNIQUE
         {
             // Check Unicity Rules
@@ -38,6 +36,28 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Services
 
             return addedMember;
         }
+
+        public Member Login(string email, string password)
+        {
+            // Check that we recieved actual data
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password)) // TODO : Question : À priori impossible vu que le constructeur ne le permet pas, du coup est-cee que ça vaut la peine ? Voire pire, est ce que ce n'est pas contre productif ??
+                throw new ArgumentNullException("Un ou plusieurs champs manquant(s) !");
+
+            // Try to get the HashWord from DB
+            string? hash = _memberRepository.GetHwdByEmail(email)!;
+
+            // If it's null the email is unknown => Exception
+            if (hash is null)
+                throw new ArgumentException("Association Login / Mot de passe erronée !"); // TODO : Custom BadCredentialsException
+
+            // If it isn't null we check if it's the good one
+            if (!Argon2HashingUtil.Verify(password, hash).Result)                          // TODO : Question : 
+                throw new ArgumentException("Association Login / Mot de passe erronée !"); // TODO : Custom BadCredentialsException
+
+            // Since all went well let's send what's expected
+            return _memberRepository.GetMemberByEmail(email)!;
+        } 
+        #endregion
 
         public Member Update(Member modifiedMember)
         {

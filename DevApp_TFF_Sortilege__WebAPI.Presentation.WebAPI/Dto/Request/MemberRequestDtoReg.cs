@@ -2,7 +2,7 @@
 
 namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Request
 {
-    public class MemberRequestDto
+    public class MemberRequestDtoReg        // TODO : Question : Pourquoi passer par 2 dto different si name est nullable ?
     {
         [MinLength(3), MaxLength(50)]
         public string? Name { get; set; }
@@ -14,6 +14,16 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Request
 
         [Required]
         [RegularExpression("(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}")]
+        public required string Password { get; set; }
+
+    }
+
+    public class MemberRequestDtoLog        // TODO : Question : Pourquoi on ne test pas la validité des pattern ? Ça pourrait éviter des requête inutiles, non ?
+    {
+        [Required]
+        public required string EmailAddress { get; set; }
+
+        [Required]
         public required string Password { get; set; }
 
     }

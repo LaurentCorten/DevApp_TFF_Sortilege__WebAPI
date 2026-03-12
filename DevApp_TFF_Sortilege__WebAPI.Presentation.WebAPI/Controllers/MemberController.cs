@@ -12,7 +12,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
     {
         public Random rnd = new Random();
 
-        // DI
+        #region DI
         private readonly IMemberService _memberService;
         private readonly TokenTools _tokenTools;
 
@@ -21,20 +21,59 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
             _memberService = memberService;
             _tokenTools = tokenTools;
         }
+        #endregion
 
-        [HttpPost("Register")]
+        #region Auth
+        [HttpPost("register")]
         [ProducesResponseType(200)]
-        public IActionResult Register(MemberRequestDto newMember)
+        [ProducesResponseType(400)]
+        public IActionResult Register([FromBody]MemberRequestDtoReg dto)
         {
+
             Member memberToAdd = new Member(
-                newMember.Name ?? "User"+(rnd.Next(999,9999)*rnd.Next(999,9999)).ToString(),
-                newMember.EmailAddress,
-                newMember.Password
+                dto.Name ?? "User" + (rnd.Next(999, 9999) * rnd.Next(999, 9999)).ToString(),
+                dto.EmailAddress,
+                dto.Password
                 );
 
-            Member addedMember = _memberService.Register(memberToAdd);
+            try
+            {
+                Member addedMember = _memberService.Register(memberToAdd);
 
-            return Ok(new {message = $"Votre compte à bien été créé {addedMember.Name} !"});
+                return Ok(new { message = $"Votre compte à bien été créé {addedMember.Name} !" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
+
+        [HttpPost("login")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public IActionResult Login([FromBody]MemberRequestDtoLog dto)
+        {
+            try
+            {
+                Member member = _memberService.Login(dto.EmailAddress, dto.Password);
+
+                string token = _tokenTools.Generate(new TokenTools.Data()
+                {
+                    MemberId = member.Id
+                });
+
+                return Ok(new
+                {
+                    Message = $"Bienvenue {member.Name} !",
+                    Token = token
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        } 
+        #endregion
     }
 }
