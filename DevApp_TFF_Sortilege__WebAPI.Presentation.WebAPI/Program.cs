@@ -33,6 +33,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking); // TODO : Mettre en NoTracking par defaut
 });
 
+// - Cors Config
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy => // TODO : Check quelle policy fait sens en prod
+    {
+        policy.AllowAnyOrigin();
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+    });
+});
+
 
 // Controllers Mapping
 builder.Services.AddControllers();
@@ -78,10 +89,15 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+// Cors unabling
+app.UseCors("AllowAll");
+
 app.UseHttpsRedirection();
 
-// UseExceptions
+//* UseExceptions To implement later
 
+// TODO Check app.UseStaticFiles();et 
+app.UseHttpsRedirection(); // TODO: Check si ça joue dans le fonctionnement des cors ou du register. Et à quoi ça sert de façon plus large
 app.UseAuthentication();
 
 app.UseAuthorization();
