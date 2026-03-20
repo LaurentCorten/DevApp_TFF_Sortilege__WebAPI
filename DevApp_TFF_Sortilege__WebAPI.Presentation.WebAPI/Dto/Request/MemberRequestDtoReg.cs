@@ -4,7 +4,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Request
 {
     public class MemberRequestDtoReg        // TODO : Question : Pourquoi passer par 2 dto different si name est nullable ?
     {
-        [MinLength(3), MaxLength(50)]
+        [MaxLength(50)]
         public string? Name { get; set; }
 
         [Required]

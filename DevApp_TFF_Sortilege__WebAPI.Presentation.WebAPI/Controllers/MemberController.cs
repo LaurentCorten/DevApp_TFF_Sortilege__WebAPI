@@ -31,7 +31,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
         {
 
             Member memberToAdd = new Member(
-                dto.Name ?? "User" + (rnd.Next(999, 9999) * rnd.Next(999, 9999)).ToString(),
+                string.IsNullOrWhiteSpace(dto.Name?.Trim()) ? "User" + (rnd.Next(999, 9999) * rnd.Next(999, 9999)).ToString() : dto.Name,
                 dto.EmailAddress,
                 dto.Password
                 );
