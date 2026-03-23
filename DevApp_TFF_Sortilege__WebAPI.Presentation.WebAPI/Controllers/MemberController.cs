@@ -27,7 +27,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
         [HttpPost("register")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult Register([FromBody]MemberRequestDto dto)
+        public IActionResult Register([FromBody] MemberRequestDtoReg dto)
         {
 
             Member memberToAdd = new Member(
