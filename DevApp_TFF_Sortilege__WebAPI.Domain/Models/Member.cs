@@ -16,15 +16,13 @@ namespace DevApp_TFF_Sortilege__WebAPI.Domain.Models
         // ctor dto front -> db 
         public Member(string name, string email, string hashWord)
         {
-            // Test de garde pour s'assurer d'avoir reçu un pseudo qui pourra rentrer dans l'emplacement mémoir prévu en db
+            // Test garde to ensure to fit in db and valid formats
             if ( string.IsNullOrWhiteSpace(name) || name.Trim().Length < 3 || name.Trim().Length > 50 )
                 throw new ArgumentException("Le pseudo dois faire entre 3 et 50 caractères !", nameof(name));
-
-            // Test de garde pour s'assurer d'avoir reçu un email au format valide
+                        
             if (string.IsNullOrWhiteSpace(email) || !MailAddress.TryCreate(email.Trim(), out _) || email.Trim().Length > 320)
                 throw new ArgumentException("Email invalide !", nameof(email));
 
-            // Test de garde pour vérifier qu'on a bien reçu un mdp
             if (string.IsNullOrWhiteSpace(hashWord))
                 throw new ArgumentException("mot de passe vide ! O__o", nameof(hashWord));
 
