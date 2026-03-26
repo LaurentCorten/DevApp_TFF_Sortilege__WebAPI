@@ -1,0 +1,21 @@
+{
+  "name": "Pierre",
+  "emailAddress": "test@test.com",
+  "password": "Test1234="
+}
+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJDbGVmIjoiVmFsZXVyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiIwMTljZTIyOS03NWJlLTc0YTYtYmM4OC05NThmMjdlZjhmZjIiLCJleHAiOjE3NzMzNDU5NTQsImlzcyI6IlNvcnRpbGVnZVdlYkFQSSIsImF1ZCI6IkludGVybmFsIn0.YbAVjBHH10TLVofaF8KoT2q1sTkEnVFAvUOIA6eHLU46mP32IOjBVG29wpDR_uFxhiE5IbakpJUQfpMLVmeAaw
+
+
+{
+  "name": "Blond",
+  "emailAddress": "test2@test.com",
+  "password": "Test1234😆"
+}
+
+
+
+{
+  "name": "User25157520",
+  "emailAddress": "test3@test.com",
+  "password": "Test1234="
+}
