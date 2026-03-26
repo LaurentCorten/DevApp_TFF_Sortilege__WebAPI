@@ -33,7 +33,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.Repositories
         /// Return all but the HashWord of a member or NullException
         /// </summary>
         /// <param name="email"></param>
-        /// <returns></returns>
+        /// <returns>Member</returns>
         public Member? GetMemberByEmail(string email)
         {
             try

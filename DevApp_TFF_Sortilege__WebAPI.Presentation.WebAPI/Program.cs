@@ -30,7 +30,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options
     .UseNpgsql(builder.Configuration.GetConnectionString("MyConnectionString"))
-    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking); // TODO : Mettre en NoTracking par defaut
+    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
 // - Cors Config
@@ -97,7 +97,7 @@ app.UseHttpsRedirection();
 //* UseExceptions To implement later
 
 // TODO Check app.UseStaticFiles();et 
-app.UseHttpsRedirection(); // TODO: Check si ça joue dans le fonctionnement des cors ou du register. Et à quoi ça sert de façon plus large
+app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();

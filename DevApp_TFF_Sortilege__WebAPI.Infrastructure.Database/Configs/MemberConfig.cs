@@ -19,7 +19,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.Configs
             // Columns
             builder.Property(m => m.Id)
                 .ValueGeneratedOnAdd()
-                .IsRequired(); // Most probably totally useless to specify but why not tho ?
+                .IsRequired(); // Most probably totally useless to specify but why not tho ? // TODO Check !
 
             builder.Property(m => m.Name)
                 .HasColumnName("Pseudo")

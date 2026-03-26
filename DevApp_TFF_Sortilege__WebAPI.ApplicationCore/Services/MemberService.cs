@@ -51,7 +51,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Services
                 throw new ArgumentException("Association Login / Mot de passe erronée !"); // TODO : Custom BadCredentialsException
 
             // If it isn't null we check if it's the good one
-            if (!Argon2HashingUtil.Verify(password, hash).Result)                          // TODO : Question : 
+            if (!Argon2HashingUtil.Verify(password, hash).Result) 
                 throw new ArgumentException("Association Login / Mot de passe erronée !"); // TODO : Custom BadCredentialsException
 
             // Since all went well let's send what's expected

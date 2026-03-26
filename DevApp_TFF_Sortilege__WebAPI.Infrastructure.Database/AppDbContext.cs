@@ -4,17 +4,17 @@ using System.Reflection;
 
 namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database
 {
-    // Configuration de la DB avec EF Core
+    // Db config with EF Core
     public class AppDbContext : DbContext
     {
-        // Ensemble des tables
+        // Tables
         public DbSet<Member> Members { get; set; }
 
 
-        // Définition du Ctor nécessaire à l'injection de dépendance
+        // Definition DI's ctor
         public AppDbContext(DbContextOptions options) : base(options) { } // TODO : Question : Pq dans la doc ils mettent AppDbContext(DbContextOptions<AppDbContext> options) et nous on ne met pas le <T> ??
 
-        // Instructions pour implémenter les configs "IEntityTypeConfiguration<>" en mode 'auto-detection' dans tout l'assembly
+        // Instructions for implementing "IEntityTypeConfiguration<>" config with 'auto-detection' in the whole assembly
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
