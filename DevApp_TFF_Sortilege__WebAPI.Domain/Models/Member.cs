@@ -3,9 +3,7 @@
 namespace DevApp_TFF_Sortilege__WebAPI.Domain.Models
 {
     public class Member
-    {
-        // TODO : Question : Pq au début on nous a appris à passer par variable privée _nomVarPrivée qui sera remplie par le ctor (_nomVarPrivée = nomVarCtor) puis utilisée par un setter manuel set {NomParam = _nomVarPrivée} ???
-        
+    {                
         public Guid Id { get; private set; }
         public string Name { get; private set; } = default!;
         public string Email { get; private set; } = default!;
@@ -16,10 +14,10 @@ namespace DevApp_TFF_Sortilege__WebAPI.Domain.Models
         private Member() { }
 
         // ctor dto front -> db 
-        public Member(string name, string email, string hashWord) // TODO : Question : Pq autoriserais l'utilisation du constructeur sans mdp ou avec un mdp null ? (cf. demo cours)
+        public Member(string name, string email, string hashWord)
         {
             // Test de garde pour s'assurer d'avoir reçu un pseudo qui pourra rentrer dans l'emplacement mémoir prévu en db
-            if (string.IsNullOrWhiteSpace(name) || (name is not null && (name.Trim().Length < 3 || name.Trim().Length > 50 )))
+            if ( string.IsNullOrWhiteSpace(name) || name.Trim().Length < 3 || name.Trim().Length > 50 )
                 throw new ArgumentException("Le pseudo dois faire entre 3 et 50 caractères !", nameof(name));
 
             // Test de garde pour s'assurer d'avoir reçu un email au format valide
@@ -29,8 +27,8 @@ namespace DevApp_TFF_Sortilege__WebAPI.Domain.Models
             // Test de garde pour vérifier qu'on a bien reçu un mdp
             if (string.IsNullOrWhiteSpace(hashWord))
                 throw new ArgumentException("mot de passe vide ! O__o", nameof(hashWord));
-            
-            Name = name!.Trim(); // TODO : Question : Pourquoi il considère que ça peut être null et pq pas pour l'email ???
+
+            Name = name.Trim();
             Email = email.Trim().ToLower();
             HashWord = hashWord;
         }

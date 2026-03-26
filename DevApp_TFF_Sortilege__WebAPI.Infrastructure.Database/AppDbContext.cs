@@ -12,7 +12,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database
 
 
         // Definition DI's ctor
-        public AppDbContext(DbContextOptions options) : base(options) { } // TODO : Question : Pq dans la doc ils mettent AppDbContext(DbContextOptions<AppDbContext> options) et nous on ne met pas le <T> ??
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         // Instructions for implementing "IEntityTypeConfiguration<>" config with 'auto-detection' in the whole assembly
         protected override void OnModelCreating(ModelBuilder modelBuilder)

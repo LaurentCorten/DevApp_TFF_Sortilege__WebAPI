@@ -3,6 +3,7 @@ using DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Interfaces.Services;
 using DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Services;
 using DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database;
 using DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.Repositories;
+using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Configs;
 using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -36,9 +37,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // - Cors Config
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy => // TODO : Check quelle policy fait sens en prod
+    options.AddPolicy("Dev", policy =>
     {
         policy.AllowAnyOrigin();
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+    });
+    options.AddPolicy("Prod", policy =>
+    {
+        policy.WithOrigins("url front"); // TODO: Mettre url(s) front
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
     });
@@ -78,7 +85,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi( options =>
+{
+    // Doc for Scalar for efficiency with jwt token
+    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+});
 
 var app = builder.Build();
 
@@ -87,17 +98,19 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
+    app.UseCors("Dev");
+}
+else
+{
+    // Cors unabling
+    app.UseCors("Prod");
 }
 
-// Cors unabling
-app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
 //* UseExceptions To implement later
 
-// TODO Check app.UseStaticFiles();et 
-app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();

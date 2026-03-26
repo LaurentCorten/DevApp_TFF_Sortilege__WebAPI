@@ -17,34 +17,34 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Services
         #endregion
 
         #region Auth
-        public Member Register(Member newMember) // Attention Name et email UNIQUE
+        public async Task<Member> RegisterAsync(Member newMember) // Attention Name & email UNIQUE
         {
             // Check Unicity Rules
-            if (_memberRepository.CheckEmailExists(newMember.Email))
+            if (await _memberRepository.CheckEmailExistsAsync(newMember.Email))
                 throw new ArgumentException("Cet email a déjà un compte associé !"); // TODO : Custom Error !
-            if (_memberRepository.CheckNameExists(newMember.Name))
-                throw new ArgumentException("Ce Pseudo est déjà pris !");
+            if (await _memberRepository.CheckNameExistsAsync(newMember.Name))
+                throw new ArgumentException("Ce Pseudo est déjà pris !");           // TODO : Custom Error !          
 
             // Hash the Password
-            string hashWord = Argon2HashingUtil.Hash(newMember.HashWord!).Result; // TODO : Question : Pq dans la doc ça dit : string hash = await Argon2HashingUtil.Hash(password) mais qu'ici il ne veut pas ??? 
+            string hashWord = await Argon2HashingUtil.Hash(newMember.HashWord!);      
 
             // Immutable since DDD => new instance
             Member MemberToAdd = new Member(newMember.Name, newMember.Email, hashWord);
 
             // Send to Repo
-            Member addedMember = _memberRepository.Insert(MemberToAdd);
+            Member addedMember = await _memberRepository.InsertAsync(MemberToAdd);
 
             return addedMember;
         }
 
-        public Member Login(string email, string password)
+        public async Task<Member> LoginAsync(string email, string password)
         {
             // Check that we recieved actual data
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password)) // TODO : Question : À priori impossible vu que le constructeur ne le permet pas, du coup est-cee que ça vaut la peine ? Voire pire, est ce que ce n'est pas contre productif ??
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
                 throw new ArgumentNullException("Un ou plusieurs champs manquant(s) !");
 
             // Try to get the HashWord from DB
-            string? hash = _memberRepository.GetHwdByEmail(email)!;
+            string? hash = await _memberRepository.GetHwdByEmailAsync(email)!;
 
             // If it's null the email is unknown => Exception
             if (hash is null)
@@ -55,16 +55,16 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Services
                 throw new ArgumentException("Association Login / Mot de passe erronée !"); // TODO : Custom BadCredentialsException
 
             // Since all went well let's send what's expected
-            return _memberRepository.GetMemberByEmail(email)!;
+            return await _memberRepository.GetMemberByEmailAsync(email);
         } 
         #endregion
 
-        public Member Update(Member modifiedMember)
+        public async Task<Member> UpdateAsync(Member modifiedMember)
         {
             throw new NotImplementedException();
         }
 
-        public bool Delete(string email, string password)
+        public async Task<bool> DeleteAsync(string email, string password)
         {
             throw new NotImplementedException();
         }

@@ -20,13 +20,13 @@ namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.Repositories
 
 
         #region Auth
-        public Member Insert(Member newMember)
+        public async Task<Member> InsertAsync(Member newMember)
         {
-            Member addedMember = _appDbContext.Add(newMember).Entity;
+            EntityEntry<Member> result = await _appDbContext.AddAsync(newMember);
 
-            _appDbContext.SaveChanges();
+            await _appDbContext.SaveChangesAsync();
 
-            return new Member(addedMember.Id, addedMember.Name, addedMember.Email);
+            return new Member(result.Entity.Id, result.Entity.Name, result.Entity.Email);
         }
 
         /// <summary>
@@ -34,12 +34,12 @@ namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.Repositories
         /// </summary>
         /// <param name="email"></param>
         /// <returns>Member</returns>
-        public Member? GetMemberByEmail(string email)
+        public async Task<Member> GetMemberByEmailAsync(string email)
         {
             try
             {
-                Member member = _appDbContext.Members
-                    .FirstOrDefault(m => m.Email == email)!;
+                Member member = (await _appDbContext.Members
+                    .FirstOrDefaultAsync(m => m.Email == email))!; //TODO : Question : pq il ne prends pas le '!' en Async ??
 
                 return new Member(member.Id, member.Name, member.Email);
             }
@@ -50,38 +50,38 @@ namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.Repositories
             }
         }
 
-        public string? GetHwdByEmail(string email)
+        public async Task<string?> GetHwdByEmailAsync(string email)
         {
-            string? hash = _appDbContext.Members
-                .FirstOrDefault(m => m.Email == email)?
+            string? hash = (await _appDbContext.Members
+                .FirstOrDefaultAsync(m => m.Email == email))?
                 .HashWord;
 
             return hash;
         } 
         #endregion
 
-        public bool CheckNameExists(string name)
+        public async Task<bool> CheckNameExistsAsync(string name)
         {
-            bool nameIsTaken = _appDbContext.Members
-                .Any(m => m.Name.ToLower() == name.ToLower());
+            bool nameIsTaken = await _appDbContext.Members
+                .AnyAsync(m => m.Name.ToLower() == name.ToLower());
 
             return nameIsTaken;
         }
 
-        public bool CheckEmailExists(string email)
+        public async Task<bool> CheckEmailExistsAsync(string email)
         {
-            bool emailIsTaken = _appDbContext.Members
-                .Any(m => m.Email == email);
+            bool emailIsTaken = await _appDbContext.Members
+                .AnyAsync(m => m.Email == email);
 
             return emailIsTaken;
         }
 
-        public Member Update(Guid id, Member modifiedMember)
+        public async Task<Member> UpdateAsync(Guid id, Member modifiedMember)
         {
             throw new NotImplementedException();
         }
 
-        public bool DeleteById(Guid id)
+        public async Task<bool> DeleteByIdAsync(Guid id)
         {
             throw new NotImplementedException();
         }

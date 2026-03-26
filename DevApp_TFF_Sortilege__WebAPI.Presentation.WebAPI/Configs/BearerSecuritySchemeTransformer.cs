@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
-namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Configs // TODO : Question : Où / Quand est-ce que ça rentre en jeu ???
+namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Configs
 {
     internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider) : IOpenApiDocumentTransformer
     {

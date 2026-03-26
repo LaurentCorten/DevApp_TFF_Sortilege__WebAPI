@@ -27,7 +27,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
         [HttpPost("register")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult Register([FromBody] MemberRequestDtoReg dto)
+        public async Task<IActionResult> RegisterAsync([FromBody] MemberRequestDtoReg dto)
         {
 
             Member memberToAdd = new Member(
@@ -38,7 +38,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
 
             try
             {
-                Member addedMember = _memberService.Register(memberToAdd);
+                Member addedMember = await _memberService.RegisterAsync(memberToAdd);
 
                 return Ok(new { message = $"Votre compte à bien été créé {addedMember.Name} !" });
             }
@@ -52,11 +52,11 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
         [HttpPost("login")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult Login([FromBody]MemberRequestDtoLog dto)
+        public async Task<IActionResult> LoginAsync([FromBody]MemberRequestDtoLog dto)
         {
             try
             {
-                Member member = _memberService.Login(dto.EmailAddress, dto.Password);
+                Member member = await _memberService.LoginAsync(dto.EmailAddress, dto.Password);
 
                 string token = _tokenTools.Generate(new TokenTools.Data()
                 {

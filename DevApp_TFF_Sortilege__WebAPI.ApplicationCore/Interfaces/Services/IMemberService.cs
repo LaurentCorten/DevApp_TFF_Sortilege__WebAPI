@@ -6,15 +6,15 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Interfaces.Services
     public interface IMemberService
     {
         // C
-        public Member Register(Member newMember);
+        public Task<Member> RegisterAsync(Member newMember);
 
         // R
-        public Member Login(string email, string password);
+        public Task<Member> LoginAsync(string email, string password);
 
         //U
-        public Member Update(Member modifiedMember);
+        public Task<Member> UpdateAsync(Member modifiedMember);
 
         //D
-        public bool Delete(string email, string password);
+        public Task<bool> DeleteAsync(string email, string password);
     }
 }

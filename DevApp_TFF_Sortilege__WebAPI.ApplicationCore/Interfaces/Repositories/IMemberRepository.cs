@@ -5,18 +5,18 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Interfaces.Repositories
     public interface IMemberRepository
     {
         // C
-        Member Insert(Member newMember);
+        Task<Member> InsertAsync(Member newMember);
 
         // R
-        Member? GetMemberByEmail(string email);
-        string? GetHwdByEmail(string email);
-        bool CheckNameExists(string name);
-        bool CheckEmailExists(string email);
+        Task<Member> GetMemberByEmailAsync(string email);
+        Task<string?> GetHwdByEmailAsync(string email);
+        Task<bool> CheckNameExistsAsync(string name);
+        Task<bool> CheckEmailExistsAsync(string email);
 
         //U
-        Member Update(Guid id, Member modifiedMember);
+        Task<Member> UpdateAsync(Guid id, Member modifiedMember);
 
         //D
-        bool DeleteById(Guid id);
+        Task<bool> DeleteByIdAsync(Guid id);
     }
 }
