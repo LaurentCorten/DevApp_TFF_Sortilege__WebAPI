@@ -5,12 +5,12 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Interfaces.Services
     public interface IRoomService
     {
         // C
-        public Room CreateRoom(Room room);
+        public Room CreateRoom(string roomName, Guid creatorId);
 
         // R
         public List<Room> GetAllRooms();
-        public Room? GetRoomByRoomId(Guid roomId);
-        public Room? GetRoomByUserId(Guid userId);
+        //public Room? GetRoomByRoomId(Guid roomId);
+        //public Room? GetRoomByUserId(Guid userId);
 
         // U
         public Room JoinRoom(Guid roomId, Guid memberId);

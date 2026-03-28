@@ -9,7 +9,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database
     {
         // Tables
         public DbSet<Member> Members { get; set; }
-        public DbSet<Game> Games { get; set; }
+        //public DbSet<Game> Games { get; set; }
 
         // Definition DI's ctor
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }

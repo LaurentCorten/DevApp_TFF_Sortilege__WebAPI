@@ -20,11 +20,13 @@ var builder = WebApplication.CreateBuilder(args);
 // -- TokenTools
 builder.Services.AddSingleton<TokenTools>();  // Wanna keep that active for the whole connection => Singleton
 
-// - Services (using 'AddScoped' because it seems the best compromize between Singleton and Transcient here)
+// - Services (using 'AddScoped' for Auth because it doesn't need to stay open all the time but Room does => Singleton)
 builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddSingleton<IRoomService, RoomService>();
 
 // - Repositories (idem)
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddSingleton<IRoomRepository, RoomRepository>();
 
 // - Mailer?
 
@@ -121,6 +123,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHub<RoomHub>("roomHub");
+
+app.MapHub<RoomHub>("/roomhub");
 
 app.Run();

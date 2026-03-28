@@ -9,35 +9,31 @@ namespace DevApp_TFF_Sortilege__WebAPI.Domain.Models
     {
         public Guid Id { get; private set; }
         public string Name { get; private set; } = default!;
-        public Member CreatorMember { get; private set; } = default!;
-        public Member? GuestMember { get; private set; } = default!;
+        public Guid CreatorId { get; private set; } = default!;
+        public Guid? GuestId { get; private set; } = default!;
         //public List<Member>? SpectatorMembers { get; private set; } = [];
-        public DateTime InitTimeStamp { get; private set; }
+        public DateTime TimeStamp { get; private set; }
 
 
         // ctor init
-        public Room(string name, Member creatorMember, DateTime initTimeStamp)
+        public Room(string roomName, Guid creatorId, DateTime timeStamp)
         {
-            if (string.IsNullOrWhiteSpace(name) || name.Trim().Length < 3 || name.Trim().Length > 50)
+            if (string.IsNullOrWhiteSpace(roomName) || roomName.Trim().Length < 3 || roomName.Trim().Length > 50)
                 throw new ArgumentException("Le nom de la partie doit faire entre 3 et 50 caractères");
-            if (initTimeStamp > DateTime.Now)
+            if (TimeStamp > DateTime.Now)
                 throw new ArgumentOutOfRangeException("la partie ne peut pas avoir été créée dans le future ...");
-            Name = name;
-            CreatorMember = creatorMember;
-            InitTimeStamp = initTimeStamp;            
+            Name = roomName;
+            CreatorId = creatorId;
+            TimeStamp = timeStamp;
+
+
         }
 
         // ctor store
-        public Room(Guid id, string name, Member creatorMember, DateTime initTimeStamp, Member? guestMember = null) : this(name, creatorMember, initTimeStamp)
+        public Room(Guid id, string roomName, Guid creatorId, DateTime timeStamp, Guid? guestId = null) : this(roomName, creatorId, timeStamp)
         {
             Id = id;
-            GuestMember = guestMember;
+            GuestId = guestId;
         }
-    }
-
-    public class RoomManager
-    {
-        public List<Room> Rooms { get; } = []; //? Dictionary ou Enum mieux ? Est-ce que ça pourrait être dans le service RoomService directement plutôt que de faire un injectione n plus ?
-      
     }
 }
