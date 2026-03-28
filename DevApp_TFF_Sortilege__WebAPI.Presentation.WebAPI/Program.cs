@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
+using Microsoft.AspNetCore.SignalR;
+using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,9 @@ builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 
 // - Mailer?
+
+// - WebSocket Manager
+builder.Services.AddSignalR();
 
 // - DB Context
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -45,7 +50,7 @@ builder.Services.AddCors(options =>
     });
     options.AddPolicy("Prod", policy =>
     {
-        policy.WithOrigins("url front"); // TODO: Mettre url(s) front
+        policy.WithOrigins("url front"); // TODO: Mettre variable environement genre ASP_CLIENT_URL avec l'URL du front !
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
     });
@@ -81,7 +86,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// - Auth0
+// - Auth0 ?
 
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -91,7 +96,7 @@ builder.Services.AddOpenApi( options =>
     options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -116,5 +121,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<RoomHub>("roomHub");
 
 app.Run();

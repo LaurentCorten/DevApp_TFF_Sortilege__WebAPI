@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.Configs
 {
-    public class GameConfigs : IEntityTypeConfiguration<Game>
+    public class GameConfigs : IEntityTypeConfiguration<Game> //TODO : Mettre à jour !!!
     {
         public void Configure(EntityTypeBuilder<Game> builder)
         {

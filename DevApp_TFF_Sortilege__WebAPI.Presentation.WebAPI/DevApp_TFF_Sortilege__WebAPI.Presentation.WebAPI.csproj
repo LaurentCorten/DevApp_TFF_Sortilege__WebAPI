@@ -23,8 +23,4 @@
     <ProjectReference Include="..\DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database\DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Hubs\" />
-  </ItemGroup>
-
 </Project>
