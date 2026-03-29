@@ -15,23 +15,16 @@ namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.Repositories
             return newRoom;
         }
 
+
         // R
         public List<Room> GetAllRooms() => _rooms.ToList();
 
-        public Room? GetRoomByRoomId(Guid roomId)
-        {
-            throw new NotImplementedException();
-        }
+        public Room? GetRoomByRoomId(Guid roomId) => _rooms.SingleOrDefault(r => r.Id == roomId);
 
-        public Room? GetRoomByUserId(Guid userId)
-        {
-            throw new NotImplementedException();
-        }
+        public Room? GetRoomByUserId(Guid userId) => _rooms.SingleOrDefault(r => r.CreatorId == userId || r.GuestId == userId);
 
-        public bool CheckRoomNameExists(string roomName)
-        {
-            return _rooms.Any(r => r.Name == roomName);
-        }
+        public bool CheckRoomNameExists(string roomName) => _rooms.Any(r => r.Name == roomName);
+        
 
         // U
         public Room UpdateRoom(Room updatedRoom)
@@ -41,10 +34,12 @@ namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.Repositories
             return updatedRoom;
         }
 
+
         // D
         public bool DeleteRoom(Guid roomId)
         {
-            throw new NotImplementedException();
+            _rooms.RemoveAll(r => r.Id == roomId);
+            return true;
         }
     }
 }

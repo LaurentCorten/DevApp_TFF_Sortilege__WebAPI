@@ -1,8 +1,11 @@
 ﻿using DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Interfaces.Services;
 using DevApp_TFF_Sortilege__WebAPI.Domain.Models;
 using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Configs;
+using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Mappers;
+using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Response;
 using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Hubs;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
@@ -14,6 +17,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
     [ApiController]
     public class RoomController : ControllerBase
     {
+        #region DI
         private readonly IRoomService _roomService;
         private readonly IHubContext<RoomHub> _hubCtx;
 
@@ -21,48 +25,119 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
         {
             _roomService = roomService;
             _hubCtx = hubCtx;
-        }
+        } 
+        #endregion
+
 
         [HttpGet]
-        public IActionResult GetRooms() => Ok(_roomService.GetAllRooms());
+        public IActionResult GetRooms() => Ok(_roomService.GetAllRooms()); // TODO : mapper le renvoie en dto
+
 
         [HttpPost]
+        [ProducesResponseType<RoomResponseDtoDetails>(201)]
+        [ProducesResponseType<BadRequest>(400)]
         public async Task<IActionResult> CreateNewRoom(string roomName)
         {
-            // Call RoomService to create the room
-            Room newRoom = _roomService.CreateRoom(roomName, new Guid(HttpContext.UserId()));
+            try
+            {
+                // Call RoomService to create the room
+                Room newRoom = _roomService.CreateRoom(roomName, new Guid(HttpContext.UserId()));
 
-            // Initiate the group for that room
-            //await _hubCtx.Groups.AddToGroupAsync(connectionId, newRoom.Id);
-            // TODO : à changer qd la vidéo en sera là.
+                // Initiate the group for that room
+                //await _hubCtx.Groups.AddToGroupAsync(connectionId, newRoom.Id);
+                // TODO : à changer qd la vidéo en sera là.
 
-            // Notify all connected clients
-            await _hubCtx.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
+                // Notify all connected clients
+                await _hubCtx.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());               
 
-            return Ok(newRoom);
+                return CreatedAtAction(nameof(GetRooms), newRoom.ToResponseDtoDetails());
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message); // TODO : À affiner avec en fonction de l'erreur catched
+            }
         }
+
 
         [HttpPut("/join/{roomId}")]
+        [ProducesResponseType<RoomResponseDtoDetails>(200)]
+        [ProducesResponseType<BadRequest>(400)]
         public async Task<IActionResult> JoinRoom([FromRoute]Guid roomId)
         {
-            // Call RoomService to join the room
-            Room updatedRoom = _roomService.JoinRoom(roomId, new Guid(HttpContext.UserId()));
+            try
+            {
+                // Call RoomService to join the room
+                Room updatedRoom = _roomService.JoinRoom(roomId, new Guid(HttpContext.UserId()));
 
-            // Join SignalR room's group
-            //await _hubCtx.Groups.AddToGroupAsync(connectionId, roomId);
-            // TODO : à changer qd la vidéo en sera là.
+                // Join SignalR room's group
+                //await _hubCtx.Groups.AddToGroupAsync(connectionId, roomId);
+                // TODO : à changer qd la vidéo en sera là.
 
-            // Notify all connected clients
-            await _hubCtx.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
+                // Notify all connected clients
+                await _hubCtx.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
 
-            return Ok(updatedRoom);
+                return Ok(updatedRoom.ToResponseDtoDetails());
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message); // TODO : À affiner avec en fonction de l'erreur catched
+            }
 
         }
 
+
         [HttpPut("/leave/{roomId}")]
-        public async Task<IActionResult> LeaveRoom([FromRoute]Guid roomId)
+        [ProducesResponseType<RoomResponseDtoDetails>(200)]
+        [ProducesResponseType<BadRequest>(400)]
+        public async Task<IActionResult> LeaveRoom([FromRoute] Guid roomId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // Call RoomService to join the room
+                Room updatedRoom = _roomService.LeaveRoom(roomId, new Guid(HttpContext.UserId()));
+
+                // Join SignalR room's group
+                //await _hubCtx.Groups.RemoveFromGroupAsync(connectionId, roomId);
+                // TODO : à changer qd la vidéo en sera là.
+
+                // Notify all connected clients
+                await _hubCtx.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
+
+                return Ok(updatedRoom.ToResponseDtoDetails());
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message); // TODO : À affiner avec en fonction de l'erreur catched
+            }
+        }
+
+        [HttpDelete("/{roomId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType<BadRequest>(400)]
+        public async Task<IActionResult> DeleteRoom([FromRoute]Guid roomId)
+        {
+            try
+            {
+                // Call RoomService to join the room
+                bool success = _roomService.DeleteRoom(roomId, new Guid(HttpContext.UserId()));
+
+                // Join SignalR room's group
+                //await _hubCtx.Groups.RemoveFromGroupAsync(connectionId, roomId);
+                // TODO : à changer qd la vidéo en sera là.
+
+                // Notify all connected clients
+                await _hubCtx.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message); // TODO : À affiner avec en fonction de l'erreur catched
+            }
         }
     }
 }
