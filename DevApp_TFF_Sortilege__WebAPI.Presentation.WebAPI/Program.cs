@@ -52,7 +52,7 @@ builder.Services.AddCors(options =>
     });
     options.AddPolicy("Prod", policy =>
     {
-        policy.WithOrigins("url front"); // TODO: Mettre variable environement genre ASP_CLIENT_URL avec l'URL du front !
+        policy.WithOrigins("http://localhost:5173"); // TODO: Mettre variable environement genre ASP_CLIENT_URL avec l'URL du front !
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
     });

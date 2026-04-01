@@ -2,6 +2,7 @@
 using DevApp_TFF_Sortilege__WebAPI.Domain.Models;
 using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Configs;
 using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Mappers;
+using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Request;
 using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Response;
 using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Hubs;
 using Microsoft.AspNetCore.Authorization;
@@ -36,12 +37,12 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
         [HttpPost]
         [ProducesResponseType<RoomResponseDtoDetails>(201)]
         [ProducesResponseType<BadRequest>(400)]
-        public async Task<IActionResult> CreateNewRoom(string roomName)
+        public async Task<IActionResult> CreateNewRoom([FromBody]RoomRequestDtoNew dtoNew)
         {
             try
             {
                 // Call RoomService to create the room
-                Room newRoom = _roomService.CreateRoom(roomName, new Guid(HttpContext.UserId()));
+                Room newRoom = _roomService.CreateRoom(dtoNew.RoomName, new Guid(HttpContext.UserId()));
 
                 // Initiate the group for that room
                 //await _hubCtx.Groups.AddToGroupAsync(connectionId, newRoom.Id);
