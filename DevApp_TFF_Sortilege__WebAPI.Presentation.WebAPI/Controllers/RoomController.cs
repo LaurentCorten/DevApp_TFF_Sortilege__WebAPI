@@ -31,11 +31,14 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
 
 
         [HttpGet]
-        public IActionResult GetRooms() => Ok(_roomService.GetAllRooms()); // TODO : mapper le renvoie en dto
+        [ProducesResponseType<IEnumerable<RoomResponseDto>>(200)]
+        public IActionResult GetRooms() => Ok(
+            _roomService.GetAllRooms().Select(RoomMappers.ToResponseDto)            
+            );
 
 
         [HttpPost]
-        [ProducesResponseType<RoomResponseDtoDetails>(201)]
+        [ProducesResponseType<RoomResponseDto>(201)]
         [ProducesResponseType<BadRequest>(400)]
         public async Task<IActionResult> CreateNewRoom([FromBody]RoomRequestDtoNew dtoNew)
         {
@@ -51,7 +54,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
                 // Notify all connected clients
                 await _hubCtx.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());               
 
-                return CreatedAtAction(nameof(GetRooms), newRoom.ToResponseDtoDetails());
+                return CreatedAtAction(nameof(GetRooms), newRoom.ToResponseDto());
             }
             catch (Exception ex)
             {
@@ -62,7 +65,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
 
 
         [HttpPut("/join/{roomId}")]
-        [ProducesResponseType<RoomResponseDtoDetails>(200)]
+        [ProducesResponseType<RoomResponseDto>(200)]
         [ProducesResponseType<BadRequest>(400)]
         public async Task<IActionResult> JoinRoom([FromRoute]Guid roomId)
         {
@@ -78,7 +81,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
                 // Notify all connected clients
                 await _hubCtx.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
 
-                return Ok(updatedRoom.ToResponseDtoDetails());
+                return Ok(updatedRoom.ToResponseDto());
             }
             catch (Exception ex)
             {
@@ -90,7 +93,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
 
 
         [HttpPut("/leave/{roomId}")]
-        [ProducesResponseType<RoomResponseDtoDetails>(200)]
+        [ProducesResponseType<RoomResponseDto>(200)]
         [ProducesResponseType<BadRequest>(400)]
         public async Task<IActionResult> LeaveRoom([FromRoute] Guid roomId)
         {
@@ -106,7 +109,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
                 // Notify all connected clients
                 await _hubCtx.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
 
-                return Ok(updatedRoom.ToResponseDtoDetails());
+                return Ok(updatedRoom.ToResponseDto());
             }
             catch (Exception ex)
             {

@@ -1,6 +1,6 @@
 ﻿namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Response
 {
-    public class RoomResponseDtoDetails
+    public class RoomResponseDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = default!;

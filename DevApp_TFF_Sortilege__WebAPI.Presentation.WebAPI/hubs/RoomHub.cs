@@ -11,6 +11,8 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Hubs
 
     public class RoomHub : Hub/*<IRoomHub>*/
     {
+
+        // This is the emmitter fct sending "real-time" room List
         public async Task SendRoomsListUpdated(List<Room> rooms)
         {
             await Clients.All.SendAsync("ReceiveRoomsListUpdated", rooms);

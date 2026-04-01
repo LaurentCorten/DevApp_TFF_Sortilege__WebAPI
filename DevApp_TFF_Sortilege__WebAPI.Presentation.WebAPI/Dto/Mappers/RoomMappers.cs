@@ -7,9 +7,9 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Mappers
     public static class RoomMappers
     {
         // Mapper from Model to detailed Response Dto
-        public static RoomResponseDtoDetails ToResponseDtoDetails (this Room room)
+        public static RoomResponseDto ToResponseDto (this Room room)
         {
-            return new RoomResponseDtoDetails()
+            return new RoomResponseDto()
             {
                 Id = room.Id,
                 Name = room.Name,
