@@ -21,11 +21,13 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
         #region DI
         private readonly IRoomService _roomService;
         private readonly IHubContext<RoomHub> _hubCtx;
+        private readonly RoomHub _roomHub;
 
-        public RoomController(IRoomService roomService, IHubContext<RoomHub> hubCtx)
+        public RoomController(IRoomService roomService, IHubContext<RoomHub> hubCtx, RoomHub roomHub)
         {
             _roomService = roomService;
             _hubCtx = hubCtx;
+            _roomHub = roomHub;
         } 
         #endregion
 
@@ -45,7 +47,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
                 // TODO : à changer qd la vidéo en sera là.
 
                 // Notify all connected clients
-                await _hubCtx.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());               
+                await _roomHub.SendNewRoom(newRoom.ToResponseDto());               
 
                 return CreatedAtAction(nameof(GetRooms), newRoom.ToResponseDto());
             }
