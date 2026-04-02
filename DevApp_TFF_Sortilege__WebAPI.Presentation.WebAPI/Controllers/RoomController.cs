@@ -29,14 +29,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
         } 
         #endregion
 
-
-        [HttpGet]
-        [ProducesResponseType<IEnumerable<RoomResponseDto>>(200)]
-        public IActionResult GetRooms() => Ok(
-            _roomService.GetAllRooms().Select(RoomMappers.ToResponseDto)            
-            );
-
-
+        // C
         [HttpPost]
         [ProducesResponseType<RoomResponseDto>(201)]
         [ProducesResponseType<BadRequest>(400)]
@@ -63,7 +56,14 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
             }
         }
 
+        // R
+        [HttpGet]
+        [ProducesResponseType<IEnumerable<RoomResponseDto>>(200)]
+        public IActionResult GetRooms() => Ok(
+            _roomService.GetAllRooms().Select(RoomMappers.ToResponseDto)            
+            );
 
+        // U  // TODO : Rassembler les 2 routes PUT en une seule avec un l'action join ou leave en param pour REST
         [HttpPut("/join/{roomId}")]
         [ProducesResponseType<RoomResponseDto>(200)]
         [ProducesResponseType<BadRequest>(400)]
@@ -118,6 +118,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
             }
         }
 
+        // D
         [HttpDelete("/{roomId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType<BadRequest>(400)]
