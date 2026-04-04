@@ -20,14 +20,12 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
     {
         #region DI
         private readonly IRoomService _roomService;
-        private readonly IHubContext<RoomHub> _hubCtx;
-        private readonly RoomHub _roomHub;
+        private readonly IHubContext<LobbyHub, ILobbyHub> _lobbyHub;
 
-        public RoomController(IRoomService roomService, IHubContext<RoomHub> hubCtx, RoomHub roomHub)
+        public RoomController(IRoomService roomService, IHubContext<LobbyHub, ILobbyHub> lobbyHub)
         {
             _roomService = roomService;
-            _hubCtx = hubCtx;
-            _roomHub = roomHub;
+            _lobbyHub = lobbyHub;
         } 
         #endregion
 
@@ -39,15 +37,17 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
         {
             try
             {
-                // Call RoomService to create the room
-                Room newRoom = _roomService.CreateRoom(dtoNew.RoomName, new Guid(HttpContext.UserId()));
+                // Retrieve the current user's ID from the JWT token
+                Guid memberId = new Guid(HttpContext.UserId());
 
-                // Initiate the group for that room
-                //await _hubCtx.Groups.AddToGroupAsync(connectionId, newRoom.Id);
-                // TODO : à changer qd la vidéo en sera là.
+                // Call RoomService to create the room
+                Room newRoom = _roomService.CreateRoom(dtoNew.RoomName, memberId);
+
+                // Initiate the signalR group for that room
+                await _lobbyHub.Groups.AddToGroupAsync(dtoNew.ConnectionId, $"Room_{newRoom.Id}");
 
                 // Notify all connected clients
-                await _roomHub.SendNewRoom(newRoom.ToResponseDto());               
+                await _lobbyHub.Clients.Group("Lobby").RoomCreated(newRoom.ToResponseDto());               
 
                 return CreatedAtAction(nameof(GetRooms), newRoom.ToResponseDto());
             }
@@ -56,6 +56,15 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
 
                 return BadRequest(ex.Message); // TODO : À affiner avec en fonction de l'erreur catched
             }
+        }
+
+        [HttpPost("/lobby")]
+        [ProducesResponseType(204)]
+        public async Task<IActionResult> CreateLobbyConnection([FromBody] string connectionId)
+        {
+            await _lobbyHub.Groups.AddToGroupAsync(connectionId, "Lobby");
+            await _lobbyHub.Clients.Client(connectionId).LobbyJoined();
+            return NoContent();
         }
 
         // R
@@ -81,7 +90,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
                 // TODO : à changer qd la vidéo en sera là.
 
                 // Notify all connected clients
-                await _hubCtx.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
+                //await _lobbyHub.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
 
                 return Ok(updatedRoom.ToResponseDto());
             }
@@ -109,7 +118,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
                 // TODO : à changer qd la vidéo en sera là.
 
                 // Notify all connected clients
-                await _hubCtx.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
+                //await _lobbyHub.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
 
                 return Ok(updatedRoom.ToResponseDto());
             }
@@ -136,7 +145,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
                 // TODO : à changer qd la vidéo en sera là.
 
                 // Notify all connected clients
-                await _hubCtx.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
+                //await _lobbyHub.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
 
                 return NoContent();
             }

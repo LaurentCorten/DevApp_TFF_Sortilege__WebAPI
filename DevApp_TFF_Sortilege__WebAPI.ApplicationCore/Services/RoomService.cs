@@ -18,7 +18,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Services
         // C
         public Room CreateRoom(string roomName, Guid creatorId)
         {
-            // Gards
+            // Guards
             Room? checkUser = _roomRepo.GetRoomByUserId(creatorId);
             if (checkUser is not null)
                 throw new ArgumentException("Cet utilisateur est déjà dans un autre lobby !"); // TODO: custom exception

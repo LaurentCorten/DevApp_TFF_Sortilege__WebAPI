@@ -23,7 +23,7 @@ builder.Services.AddSingleton<TokenTools>();  // Wanna keep that active for the 
 // - Services (using 'AddScoped' for Auth because it doesn't need to stay open all the time but Room does => Singleton)
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddSingleton<IRoomService, RoomService>();
-builder.Services.AddSingleton<RoomHub>();
+//builder.Services.AddSingleton<LobbyHub>();
 
 // - Repositories (idem)
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
@@ -125,6 +125,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<RoomHub>("/roomhub");
+app.MapHub<LobbyHub>("/lobbyhub");
 
 app.Run();
