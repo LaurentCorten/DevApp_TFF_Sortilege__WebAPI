@@ -47,15 +47,17 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Dev", policy =>
     {
-        policy.AllowAnyOrigin();
+        policy.WithOrigins("http://localhost:5173");
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
+        policy.AllowCredentials();
     });
     options.AddPolicy("Prod", policy =>
     {
         policy.WithOrigins("http://localhost:5173"); // TODO: Mettre variable environement genre ASP_CLIENT_URL avec l'URL du front !
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
+        policy.AllowCredentials();
     });
 });
 

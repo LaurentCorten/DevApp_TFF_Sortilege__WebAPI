@@ -58,7 +58,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
             }
         }
 
-        [HttpPost("/lobby")]
+        [HttpPost("/api/lobby")]
         [ProducesResponseType(204)]
         public async Task<IActionResult> CreateLobbyConnection([FromBody] string connectionId)
         {
@@ -75,7 +75,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
             );
 
         // U  // TODO : Rassembler les 2 routes PUT en une seule avec un l'action join ou leave en param pour REST
-        [HttpPut("/join/{roomId}")]
+        [HttpPut("join/{roomId}")]
         [ProducesResponseType<RoomResponseDto>(200)]
         [ProducesResponseType<BadRequest>(400)]
         public async Task<IActionResult> JoinRoom([FromRoute]Guid roomId)
@@ -103,7 +103,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
         }
 
 
-        [HttpPut("/leave/{roomId}")]
+        [HttpPut("leave/{roomId}")]
         [ProducesResponseType<RoomResponseDto>(200)]
         [ProducesResponseType<BadRequest>(400)]
         public async Task<IActionResult> LeaveRoom([FromRoute] Guid roomId)
@@ -130,7 +130,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
         }
 
         // D
-        [HttpDelete("/{roomId}")]
+        [HttpDelete("{roomId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType<BadRequest>(400)]
         public async Task<IActionResult> DeleteRoom([FromRoute]Guid roomId)
