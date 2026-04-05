@@ -13,4 +13,13 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Request
         // used to add them to the appropriate SignalR groups
         public string ConnectionId { get; set; } = default!;
     }
+
+    public class RoomRequestDtoUpdate
+    {
+        [Required]
+        public Guid RoomId { get; set; }
+
+        [Required]
+        public string ConnectionId { get; set; } = default!;
+    }
 }

@@ -35,6 +35,8 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Services
         // R
         public List<Room> GetAllRooms() => _roomRepo.GetAllRooms();
 
+        public Room? GetRoomByMemberId(Guid memberId) => _roomRepo.GetRoomByUserId(memberId); // TODO: Guard tests ^^
+
 
         // U
         public Room JoinRoom(Guid roomId, Guid memberId)

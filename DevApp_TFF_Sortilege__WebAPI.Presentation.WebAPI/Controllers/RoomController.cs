@@ -26,14 +26,15 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
         {
             _roomService = roomService;
             _lobbyHub = lobbyHub;
-        } 
+        }
         #endregion
 
-        // C
+        
+        #region C
         [HttpPost]
         [ProducesResponseType<RoomResponseDto>(201)]
         [ProducesResponseType<BadRequest>(400)]
-        public async Task<IActionResult> CreateNewRoom([FromBody]RoomRequestDtoNew dtoNew)
+        public async Task<IActionResult> CreateNewRoom([FromBody] RoomRequestDtoNew dtoNew)
         {
             try
             {
@@ -47,7 +48,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
                 await _lobbyHub.Groups.AddToGroupAsync(dtoNew.ConnectionId, $"Room_{newRoom.Id}");
 
                 // Notify all connected clients
-                await _lobbyHub.Clients.Group("Lobby").RoomCreated(newRoom.ToResponseDto());               
+                await _lobbyHub.Clients.Group("Lobby").RoomCreated(newRoom.ToResponseDto());
 
                 return CreatedAtAction(nameof(GetRooms), newRoom.ToResponseDto());
             }
@@ -56,16 +57,22 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
 
                 return BadRequest(ex.Message); // TODO : À affiner avec en fonction de l'erreur catched
             }
-        }
+        } 
 
         [HttpPost("/api/lobby")]
         [ProducesResponseType(204)]
         public async Task<IActionResult> CreateLobbyConnection([FromBody] string connectionId)
         {
+            // Connect to Lobby group and get check ping
             await _lobbyHub.Groups.AddToGroupAsync(connectionId, "Lobby");
             await _lobbyHub.Clients.Client(connectionId).LobbyJoined();
+
+            // Register the connection → member mapping for disconnect cleanup
+            LobbyHub.RegisterConnection(connectionId, new Guid(HttpContext.UserId()));
+
             return NoContent();
         }
+        #endregion
 
         // R
         [HttpGet]
@@ -74,25 +81,26 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
             _roomService.GetAllRooms().Select(RoomMappers.ToResponseDto)            
             );
 
-        // U  // TODO : Rassembler les 2 routes PUT en une seule avec un l'action join ou leave en param pour REST
-        [HttpPut("join/{roomId}")]
+        // TODO : Rassembler les 2 routes PUT en une seule avec un l'action join ou leave en param pour REST
+        #region U
+        [HttpPut("join")]
         [ProducesResponseType<RoomResponseDto>(200)]
         [ProducesResponseType<BadRequest>(400)]
-        public async Task<IActionResult> JoinRoom([FromRoute]Guid roomId)
+        public async Task<IActionResult> JoinRoom([FromBody]RoomRequestDtoUpdate dto)
         {
             try
             {
                 // Call RoomService to join the room
-                Room updatedRoom = _roomService.JoinRoom(roomId, new Guid(HttpContext.UserId()));
+                Room updatedRoom = _roomService.JoinRoom(dto.RoomId, new Guid(HttpContext.UserId()));
+                RoomResponseDto roomDto = updatedRoom.ToResponseDto();
 
                 // Join SignalR room's group
-                //await _hubCtx.Groups.AddToGroupAsync(connectionId, roomId);
-                // TODO : à changer qd la vidéo en sera là.
+                await _lobbyHub.Groups.AddToGroupAsync(dto.ConnectionId, $"Room_{ dto.RoomId}");
 
                 // Notify all connected clients
-                //await _lobbyHub.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
+                await _lobbyHub.Clients.Group("Lobby").RoomUpdated(roomDto);
 
-                return Ok(updatedRoom.ToResponseDto());
+                return Ok(roomDto);
             }
             catch (Exception ex)
             {
@@ -103,22 +111,22 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
         }
 
 
-        [HttpPut("leave/{roomId}")]
+        [HttpPut("leave")]
         [ProducesResponseType<RoomResponseDto>(200)]
         [ProducesResponseType<BadRequest>(400)]
-        public async Task<IActionResult> LeaveRoom([FromRoute] Guid roomId)
+        public async Task<IActionResult> LeaveRoom([FromBody] RoomRequestDtoUpdate dto)
         {
             try
             {
                 // Call RoomService to join the room
-                Room updatedRoom = _roomService.LeaveRoom(roomId, new Guid(HttpContext.UserId()));
+                Room updatedRoom = _roomService.LeaveRoom(dto.RoomId, new Guid(HttpContext.UserId()));
+                RoomResponseDto roomDto = updatedRoom.ToResponseDto();
 
                 // Join SignalR room's group
-                //await _hubCtx.Groups.RemoveFromGroupAsync(connectionId, roomId);
-                // TODO : à changer qd la vidéo en sera là.
+                await _lobbyHub.Groups.RemoveFromGroupAsync(dto.ConnectionId, $"Room_{dto.RoomId}");
 
                 // Notify all connected clients
-                //await _lobbyHub.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
+                await _lobbyHub.Clients.Group("Lobby").RoomUpdated(roomDto);
 
                 return Ok(updatedRoom.ToResponseDto());
             }
@@ -127,25 +135,25 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
 
                 return BadRequest(ex.Message); // TODO : À affiner avec en fonction de l'erreur catched
             }
-        }
+        } 
+        #endregion
 
         // D
-        [HttpDelete("{roomId}")]
+        [HttpDelete("delete")]
         [ProducesResponseType(204)]
         [ProducesResponseType<BadRequest>(400)]
-        public async Task<IActionResult> DeleteRoom([FromRoute]Guid roomId)
+        public async Task<IActionResult> DeleteRoom([FromBody] RoomRequestDtoUpdate dto)
         {
             try
             {
                 // Call RoomService to join the room
-                bool success = _roomService.DeleteRoom(roomId, new Guid(HttpContext.UserId()));
+                bool success = _roomService.DeleteRoom(dto.RoomId, new Guid(HttpContext.UserId()));
 
                 // Join SignalR room's group
-                //await _hubCtx.Groups.RemoveFromGroupAsync(connectionId, roomId);
-                // TODO : à changer qd la vidéo en sera là.
+                await _lobbyHub.Groups.RemoveFromGroupAsync(dto.ConnectionId, $"Room_{dto.RoomId}");
 
                 // Notify all connected clients
-                //await _lobbyHub.Clients.All.SendAsync("ReceiveRoomsListUpdate", _roomService.GetAllRooms());
+                await _lobbyHub.Clients.Group("Lobby").RoomDeleted(dto.RoomId);
 
                 return NoContent();
             }

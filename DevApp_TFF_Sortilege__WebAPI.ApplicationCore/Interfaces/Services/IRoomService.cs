@@ -9,6 +9,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Interfaces.Services
 
         // R
         public List<Room> GetAllRooms();
+        public Room? GetRoomByMemberId(Guid memberId);
 
         // U
         public Room JoinRoom(Guid roomId, Guid memberId);
