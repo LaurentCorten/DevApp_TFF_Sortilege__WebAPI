@@ -1,7 +1,11 @@
 ﻿using DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Interfaces.Services;
 using DevApp_TFF_Sortilege__WebAPI.Domain.Models;
+using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Configs;
+using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Mappers;
 using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Request;
+using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Dto.Response;
 using DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Token;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
@@ -23,6 +27,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
         }
         #endregion
 
+        // C
         #region Auth
         [HttpPost("register")]
         [ProducesResponseType(200)]
@@ -63,9 +68,12 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
                     MemberId = member.Id
                 });
 
-                return Ok(new
+                MemberResponseDto memberDto = member.ToResponseDto();
+
+                return Ok(new // TODO: Faire un LoginResponseDto propre
                 {
-                    Message = $"Bienvenue {member.Name} !",
+                    Message = $"Bienvenue {memberDto.Name} !",
+                    Member = memberDto,
                     Token = token
                 });
             }
@@ -73,7 +81,29 @@ namespace DevApp_TFF_Sortilege__WebAPI.Presentation.WebAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        } 
+        }
         #endregion
+
+        // R
+        [HttpGet]
+        [Authorize] // Needed to refresh memberState w. accessToken
+        [ProducesResponseType<MemberResponseDto>(200)]
+        public async Task<IActionResult> GetMemberByTokenAsync()
+        {
+            Guid memberId = new Guid(HttpContext.UserId());
+
+            try
+            {
+                Member member = await _memberService.GetMemberByIdAsync(memberId);
+
+                return Ok(member.ToResponseDto());
+            } 
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Interfaces.Services
 
         // R
         public Task<Member> LoginAsync(string email, string password);
+        public Task<Member> GetMemberByIdAsync(Guid memberId);
 
         //U
         public Task<Member> UpdateAsync(Member modifiedMember);

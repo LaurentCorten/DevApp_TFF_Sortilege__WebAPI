@@ -16,7 +16,9 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Services
         }
         #endregion
 
+
         #region Auth
+        // C
         public async Task<Member> RegisterAsync(Member newMember) // Attention Name & email UNIQUE
         {
             // Check Unicity Rules
@@ -37,6 +39,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Services
             return addedMember;
         }
 
+        // R
         public async Task<Member> LoginAsync(string email, string password)
         {
             // Check that we recieved actual data
@@ -56,8 +59,16 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Services
 
             // Since all went well let's send what's expected
             return await _memberRepository.GetMemberByEmailAsync(email);
-        } 
+        }
         #endregion
+
+        public async Task<Member> GetMemberByIdAsync(Guid memberId)
+        {
+            // TODO : Guard !
+
+            return await _memberRepository.GetMemberByIdAsync(memberId);
+        }
+
 
         public async Task<Member> UpdateAsync(Member modifiedMember)
         {

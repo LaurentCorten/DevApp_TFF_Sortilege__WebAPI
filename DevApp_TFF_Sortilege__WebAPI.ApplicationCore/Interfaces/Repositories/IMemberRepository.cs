@@ -8,6 +8,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.ApplicationCore.Interfaces.Repositories
         Task<Member> InsertAsync(Member newMember);
 
         // R
+        Task<Member> GetMemberByIdAsync(Guid memberId);
         Task<Member> GetMemberByEmailAsync(string email);
         Task<string?> GetHwdByEmailAsync(string email);
         Task<bool> CheckNameExistsAsync(string name);

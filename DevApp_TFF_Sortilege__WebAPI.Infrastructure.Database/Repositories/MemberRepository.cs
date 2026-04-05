@@ -20,6 +20,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.Repositories
 
 
         #region Auth
+        // C
         public async Task<Member> InsertAsync(Member newMember)
         {
             EntityEntry<Member> result = await _appDbContext.AddAsync(newMember);
@@ -27,6 +28,28 @@ namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.Repositories
             await _appDbContext.SaveChangesAsync();
 
             return new Member(result.Entity.Id, result.Entity.Name, result.Entity.Email);
+        }
+
+        // R
+
+        /// <summary>
+        /// Return all but the HashWord of a member or NullException
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <returns>Member</returns>
+        public async Task<Member> GetMemberByIdAsync(Guid memberId)
+        {
+            try
+            {
+                Member member = (await _appDbContext.Members.SingleOrDefaultAsync(m => m.Id == memberId))!;
+
+                return new Member(member.Id, member.Name, member.Email);
+            }
+            catch (Exception ex)
+            {
+
+                throw new NullReferenceException(ex.Message); // TODO : Custom a NotFoundException
+            }
         }
 
         /// <summary>
@@ -39,7 +62,7 @@ namespace DevApp_TFF_Sortilege__WebAPI.Infrastructure.Database.Repositories
             try
             {
                 Member member = (await _appDbContext.Members
-                    .FirstOrDefaultAsync(m => m.Email == email))!; //TODO : Question : pq il ne prends pas le '!' en Async ??
+                    .FirstOrDefaultAsync(m => m.Email == email))!;
 
                 return new Member(member.Id, member.Name, member.Email);
             }
